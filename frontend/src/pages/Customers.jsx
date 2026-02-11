@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, Edit, Trash2, X, User, Mail, Phone, MapPin } from 'lucide-react';
 import Layout from '../components/Layout';
 import { customerAPI } from '../services/api';
@@ -17,20 +17,21 @@ const Customers = () => {
   });
   const [notification, setNotification] = useState({ show: false, message: '', type: '' });
 
-  useEffect(() => {
-    fetchCustomers();
-  }, []);
-
-  const fetchCustomers = async () => {
+  const fetchCustomers = useCallback(async () => {
     try {
       const response = await customerAPI.getAll();
       setCustomers(response.data);
     } catch (error) {
-      showNotification('Error fetching customers', 'error');
+      setNotification({ show: true, message: 'Error fetching customers', type: 'error' });
+      setTimeout(() => setNotification({ show: false, message: '', type: '' }), 3000);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
 
   const showNotification = (message, type) => {
     setNotification({ show: true, message, type });

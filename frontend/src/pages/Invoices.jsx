@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, Search, Trash2, X, FileText } from 'lucide-react';
 import Layout from '../components/Layout';
 import { invoiceAPI, customerAPI, productAPI } from '../services/api';
@@ -19,10 +19,6 @@ const Invoices = () => {
   const [notes, setNotes] = useState('');
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     // Filter invoices based on search term
     if (searchTerm) {
       const filtered = invoices.filter(invoice =>
@@ -35,7 +31,7 @@ const Invoices = () => {
     }
   }, [searchTerm, invoices]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [invoicesRes, customersRes, productsRes] = await Promise.all([
         invoiceAPI.getAll(),
@@ -48,11 +44,16 @@ const Invoices = () => {
       setCustomers(customersRes.data);
       setProducts(productsRes.data);
     } catch (error) {
-      showNotification('Error fetching data', 'error');
+      setNotification({ show: true, message: 'Error fetching data', type: 'error' });
+      setTimeout(() => setNotification({ show: false, message: '', type: '' }), 3000);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const showNotification = (message, type) => {
     setNotification({ show: true, message, type });
