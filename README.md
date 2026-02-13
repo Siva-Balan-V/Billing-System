@@ -21,7 +21,7 @@ A full-stack MERN (MongoDB, Express, React, Node.js) billing and invoice managem
 ### User Management
 - 🔐 User registration and authentication
 - 🔑 JWT-based secure authentication
-- 👤 Password hashing with bcrypt
+- 👤 Password hashing with bcryptjs
 
 ### Customer Management
 - ➕ Add, edit, and delete customers
@@ -203,6 +203,7 @@ Billing-System/
 │   │   │   ├── Products.jsx
 │   │   │   └── Invoices.jsx
 │   │   ├── services/
+│   │   │   └── api.js         # API service configuration
 │   │   ├── App.js
 │   │   └── index.js
 │   ├── .env
